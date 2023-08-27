@@ -82,7 +82,6 @@ export default function salesPage() {
       }
     })
   );
-  console.log(toggleIngredients);
   return (
     <>
     <div className="flex flex-col bg-gray-900 text-2xl items-center mb-2">

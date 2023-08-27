@@ -17,7 +17,7 @@ export default async function handler(req, res){
         
         res.status(201).send({message: "New ingredient created successfully", newIngredient})
       }else{
-        res.status(409).send({message: "Ingredient already exists"})
+        res.status(200).send({message: "Ingredient already exists", ingredient : ingredient})
       }
     }catch(error){
       console.error(error)
@@ -32,6 +32,16 @@ export default async function handler(req, res){
     }catch(error){
       console.error(error)
       res.status(400).send({message: "API error"})
+    }
+  }
+  if(req.method === "PUT"){
+    try{
+      const {id , name} = req.body
+      await connectMongoDb();
+      await Ingredients.findByIdAndUpdate({_id: id}, {name: name})
+      res.status(200)
+    }catch(error){
+      res.status(500).send({message: error})
     }
   }
 }

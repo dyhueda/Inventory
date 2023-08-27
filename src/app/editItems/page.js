@@ -18,16 +18,16 @@ export default function editItemsPage() {
       .then((response) => setAllItems(response.items))
       .catch((error) => console.error(error));
   }, []);
-  console.log(allItems);
+
 
   return (
     <>
-    <div className="flex flex-col bg-gray-900 text-2xl items-center mb-2">
+    <div className="flex flex-col bg-gray-900 text-2xl items-center ">
       <h1 className="p-2">Edit Items</h1>
     </div>
-    <div className="flex p-2 flex-col text-lg gap-1 ">
+    <div className="flex p-2 flex-col text-lg  divide-y">
       {allItems?.map((item) => (
-        <div key={item._id}>
+        <div className="p-1" key={item._id}>
           <InputItems item={item} />
         </div>
       ))}

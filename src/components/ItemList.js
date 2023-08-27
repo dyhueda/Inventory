@@ -23,7 +23,7 @@ export default function ItemList() {
     const response = await res.json();
     if(res.ok){
       console.log(response);
-      setInputDisabled(true);
+
     }else{
       console.log(response);
     }
@@ -47,6 +47,7 @@ export default function ItemList() {
           {!inputDisabled &&(
           <button onClick={(e)=>{
             e.preventDefault();
+            setInputDisabled(true);
             setAddIngredients(!addIngredients);
             handleNewItem();
           }}
