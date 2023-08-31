@@ -1,5 +1,5 @@
 export const getStaticProps = async () =>{
-  const res = await fetch("/api/item", {
+  const res = await fetch("localhost:3000/api/item", {
     method: "GET",
     headers: {
       "Content-type": "application/json",
