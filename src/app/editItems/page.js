@@ -1,4 +1,3 @@
-"use client";
 export const getStaticProps = async () =>{
   const res = await fetch("/api/item", {
     method: "GET",
@@ -11,11 +10,10 @@ export const getStaticProps = async () =>{
   return {props : {items}}
 }
 import InputItems from "@/components/InputItems";
-import { useState } from "react";
 
 export default function editItemsPage({items}) {
-  const [allItems, setAllItems] = useState([]);
-  setAllItems(items)
+
+  const allItems = items
 
 /*   useEffect(() => {
     fetch("/api/item", {
