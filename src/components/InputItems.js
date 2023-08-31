@@ -1,3 +1,4 @@
+"use client"
 import DeleteIcon from "@/components/icons/DeleteIcon";
 import EditIcon from "@/components/icons/EditIcon";
 import SmallArrowDownIcon from "@/components/icons/SmallArrowDownIcon";
