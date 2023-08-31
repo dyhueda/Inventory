@@ -1,19 +1,17 @@
-export const getItems = async () =>{
-  const res = await fetch("/api/item", {
-    method: "GET",
-    headers: {
-      "Content-type": "application/json",
-    },
-  })
-  const response = await res.json();
-  const items = response.items
-  return {props : {items}}
-}
 import InputItems from "@/components/InputItems";
 
-export default function editItemsPage({items}) {
-
-  const allItems = items
+export default async function editItemsPage() {
+    const res = await fetch("localhost:3000/api/item", {
+      next: { revalidate: 2 },
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+    const response = await res.json();
+    const items = response.items
+    console.log (items)
+  
 
 /*   useEffect(() => {
     fetch("/api/item", {
