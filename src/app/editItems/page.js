@@ -1,13 +1,23 @@
 "use client";
+export const getStaticProps = async () =>{
+  const res = await fetch("/api/item", {
+    method: "GET",
+    headers: {
+      "Content-type": "application/json",
+    },
+  })
+  const response = await res.json();
+  const items = response.items
+  return {props : {items}}
+}
 import InputItems from "@/components/InputItems";
+import { useState } from "react";
 
-import { useEffect, useState } from "react";
-
-export default function editItemsPage() {
+export default function editItemsPage({items}) {
   const [allItems, setAllItems] = useState([]);
+  setAllItems(items)
 
-
-  useEffect(() => {
+/*   useEffect(() => {
     fetch("/api/item", {
       method: "GET",
       headers: {
@@ -17,7 +27,7 @@ export default function editItemsPage() {
       .then((response) => response.json())
       .then((response) => setAllItems(response.items))
       .catch((error) => console.error(error));
-  }, []);
+  }, []); */
 
 
   return (

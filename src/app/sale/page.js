@@ -7,7 +7,6 @@ export default function salePage() {
   const [allItems, setAllItems] = useState([]);
   const [sales, setSales] = useState([]);
   const [salesListHidden, setSalesListHidden] = useState(false);
-  const [ingredients, setIngredients] = useState([]);
   const [lastItem, setLastItem] = useState(``);
   useEffect(() => {
     fetch(`/api/item`, {
