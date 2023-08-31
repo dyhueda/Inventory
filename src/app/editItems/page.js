@@ -1,7 +1,7 @@
 import InputItems from "@/components/InputItems";
 
 export default async function editItemsPage() {
-    const res = await fetch("localhost:3000/api/item", {
+    const res = await fetch("/api/item", {
       next: { revalidate: 2 },
       method: "GET",
       headers: {
@@ -11,6 +11,7 @@ export default async function editItemsPage() {
     const response = await res.json();
     const items = response.items
     console.log (items)
+    const allItems = items
   
 
 /*   useEffect(() => {
