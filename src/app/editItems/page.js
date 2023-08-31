@@ -1,4 +1,4 @@
-export const getStaticProps = async () =>{
+export const getItems = async () =>{
   const res = await fetch("/api/item", {
     method: "GET",
     headers: {
