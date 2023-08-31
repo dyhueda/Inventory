@@ -10,6 +10,7 @@ const itemSchema = new mongoose.Schema(
           ref: "Ingredients",
         },
         quantity: { type: Number },
+        measure: {type: String},
       },
     ],
   },

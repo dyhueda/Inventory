@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/components/Loading";
 import CancelIcon from "@/components/icons/CancelIcon";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -8,6 +9,8 @@ export default function salePage() {
   const [sales, setSales] = useState([]);
   const [salesListHidden, setSalesListHidden] = useState(false);
   const [lastItem, setLastItem] = useState(``);
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     fetch(`/api/item`, {
       method: "GET",
@@ -15,10 +18,12 @@ export default function salePage() {
         "Content-type": "application/json",
       },
     })
-      .then((response) => response.json())
-      .then((response) => setAllItems(response.items))
-      .catch((error) => console.error(error));
-  }, []);
+    .then((response) => response.json())
+    .then((response) => setAllItems(response.items))
+    .then(setLoading(false))
+    .catch((error) => console.error(error));
+  }, 
+  []);
 
   const deleteSale = async (indexToDelete, item, date) => {
     const updatedSales = sales.filter((_, index) => index !== indexToDelete);
@@ -70,9 +75,9 @@ export default function salePage() {
   };
   return (
     <>
-    <div className="flex flex-col bg-gray-900 text-2xl items-center mb-2">
-      <h1 className="p-2">Sale</h1>
-    </div>
+      <div className="flex flex-col bg-gray-900 text-2xl items-center mb-2">
+        <h1 className="p-2">Sale</h1>
+      </div>
       <div className="relative flex-row-reverse flex justify-between m-2 p-2 ">
         <button
           className="bg-blue-900 p-2 rounded-xl"
@@ -110,18 +115,22 @@ export default function salePage() {
         )}
       </div>
       <div className="grid grid-cols-2 gap-2 text-xl bg-slate-700 p-2">
-        {allItems?.map((item) => (
-          <button
-            onClick={(e) => {
-              e.preventDefault;
-              handleAddItem(item);
-            }}
-            className="bg-slate-900 p-2 rounded-xl focus:outline-none focus:ring focus:ring-slate-300  "
-            key={item._id}
-          >
-            {item.name}
-          </button>
-        ))}
+        {loading ? (
+          <Loading />
+        ) : (
+          allItems?.map((item) => (
+            <button
+              onClick={(e) => {
+                e.preventDefault;
+                handleAddItem(item);
+              }}
+              className="bg-slate-900 p-2 rounded-xl focus:outline-none focus:ring focus:ring-slate-300  "
+              key={item._id}
+            >
+              {item.name}
+            </button>
+          ))
+        )}
       </div>
     </>
   );

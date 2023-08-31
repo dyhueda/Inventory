@@ -81,9 +81,8 @@ export default function InputItems(props) {
               </button>
             )}
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                handleDeleteItem();
+              onClick={() => {
+                  handleDeleteItem();
               }}
               className="bg-red-800 p-1 rounded"
             >

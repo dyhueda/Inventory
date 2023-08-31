@@ -1,20 +1,13 @@
+"use client"
 import InputItems from "@/components/InputItems";
+import Loading from "@/components/Loading";
+import { useEffect, useState } from "react";
 
-export default async function editItemsPage() {
-    const res = await fetch("/api/item", {
-      next: { revalidate: 2 },
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-      },
-    })
-    const response = await res.json();
-    const items = response.items
-    console.log (items)
-    const allItems = items
+export default function editItemsPage() {
+  const [allItems , setAllItems] = useState()
+  const [loading , setLoading] = useState(true)
   
-
-/*   useEffect(() => {
+  useEffect(() => {
     fetch("/api/item", {
       method: "GET",
       headers: {
@@ -23,8 +16,9 @@ export default async function editItemsPage() {
     })
       .then((response) => response.json())
       .then((response) => setAllItems(response.items))
+      .then (setLoading(false))
       .catch((error) => console.error(error));
-  }, []); */
+  }, []);
 
 
   return (
@@ -33,11 +27,16 @@ export default async function editItemsPage() {
       <h1 className="p-2">Edit Items</h1>
     </div>
     <div className="flex p-2 flex-col text-lg  divide-y">
-      {allItems?.map((item) => (
-        <div className="p-1" key={item._id}>
-          <InputItems item={item} />
-        </div>
-      ))}
+      {loading ? (
+        <Loading/>
+      ):(
+        
+        allItems?.map((item) => (
+          <div className="p-1" key={item._id}>
+            <InputItems item={item} />
+          </div>
+        ))
+      )}
       </div>
     </>
   );

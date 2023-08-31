@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import AddIcon from "./icons/AddIcon";
 import CheckIcon from "./icons/CheckIcon";
 import firstLetterUpperCase from "./../utils/firstLetterUpperCase";
@@ -13,7 +13,9 @@ export default function AddIngredients(props) {
   const [numbersOpen, setNumbersOpen] = useState(false);
   const [numberHidden, setNumberHidden] = useState(false);
   const [ingredientsOnItem, setIngredientOnItem] = useState([""]);
-  const [createItemButton, setCreateItemButton] = useState(true)
+  const [createItemButton, setCreateItemButton] = useState(true);
+  const [ingredientMeasure, setIngredientMeasure] = useState("Un");
+  const [MeasureOpen, setMeasureOpen] = useState(false);
 
   const handleAddIngredients = async () => {
     const name = firstLetterUpperCase(ingredientName);
@@ -58,27 +60,40 @@ export default function AddIngredients(props) {
     setNumberOfIngredient(e.target.value);
     setNumbersOpen(!numbersOpen);
   };
+  const handleMeasure = (e) => {
+    e.preventDefault();
+    setIngredientMeasure(e.target.value);
+    setMeasureOpen(!MeasureOpen);
+  };
 
   const handleUpdateItem = async (e) => {
     e.preventDefault();
     const name = props.item;
     const ingredient = ingredientId;
     const quantity = numberOfIngredient;
+    const measure = ingredientMeasure;
     const res = await fetch("/api/item", {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ name, ingredientId: ingredient, quantity , type: 'addIngredient' }),
+      body: JSON.stringify({
+        name,
+        ingredientId: ingredient,
+        quantity,
+        measure,
+        type: "addIngredient",
+      }),
     });
     const response = await res.json();
     if (res.ok) {
       setIngredientOnItem([
         ...ingredientsOnItem,
-        { name: ingredientName, quantity: quantity },
+        { name: ingredientName, quantity: quantity, measure: measure },
       ]);
       setIngredientName("");
       setNumberOfIngredient("");
+      setIngredientMeasure("Un");
       setNumberHidden(!numberHidden);
       console.log(response);
     } else {
@@ -92,15 +107,18 @@ export default function AddIngredients(props) {
         <div key={ingredient._id} className="flex flex-row justify-between p-1">
           <div>{ingredient.name}</div>
           <div>{ingredient.quantity}</div>
+          <div>{ingredient.measure}</div>
         </div>
       ))}
       <form className="flex justify-center">
-        <div className="flex flex-col relative p-1 max-w-3/4">
-          <>
+        <div className="flex flex-col relative p-1 max-w-6/12">
+          <div className="flex items-center">
             <input
-              onClick={() => {
-                setIngredientsOpen(!ingredientsOpen);
-              }}
+                onSelect={() => {
+                  setNumbersOpen(false)
+                  setIngredientsOpen(!ingredientsOpen);
+                  setMeasureOpen(false)
+                }}
               className="w-full p-1 rounded-l-xl"
               onChange={(e) => {
                 setIngredientName(e.target.value);
@@ -118,25 +136,27 @@ export default function AddIngredients(props) {
             >
               <AddIcon />
             </button>
-          </>
+          </div>
           <>
             {ingredientsOpen && (
               <div className="absolute top-11 w-full">
                 <div className="flex flex-col ">
                   {allIngredients?.map((ingredient) => (
-                    <button
-                      className="bg-slate-500 odd:bg-slate-600"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIngredientName(ingredient.name);
-                        setIngredientsOpen(!ingredientsOpen);
-                        setIngredientId(ingredient._id);
-                        setNumberHidden(!numberHidden);
-                      }}
-                      key={ingredient._id}
-                    >
-                      {ingredient.name}
-                    </button>
+                    <Fragment key={ingredient._id}>
+                      <button
+                        className="bg-slate-500 odd:bg-slate-600"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setIngredientName(ingredient.name);
+                          setIngredientsOpen(!ingredientsOpen);
+                          setIngredientId(ingredient._id);
+                          setNumberHidden(!numberHidden);
+                        }}
+                        key={ingredient._id}
+                      >
+                        {ingredient.name}
+                      </button>
+                    </Fragment>
                   ))}
                 </div>
               </div>
@@ -145,12 +165,14 @@ export default function AddIngredients(props) {
         </div>
         {numberHidden && (
           <>
-            <div className="flex flex-col relative w-2/12 py-1">
+            <div className="flex relative w-5/12 gap-1 py-1">
               <input
-                onClick={() => {
+                onSelect={() => {
                   setNumbersOpen(!numbersOpen);
+                  setIngredientsOpen(false);
+                  setMeasureOpen(false);
                 }}
-                className="p-1"
+                className="p-1 w-1/2"
                 type="number"
                 onChange={(e) => {
                   setNumberOfIngredient(e.target.value);
@@ -160,26 +182,92 @@ export default function AddIngredients(props) {
               {numbersOpen && (
                 <div className="absolute top-11">
                   <div className="flex flex-col">
-                    <button className="bg-slate-500 odd:bg-slate-600" onClick={handleNumber} value="0.125">
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleNumber}
+                      value="0.125"
+                    >
                       0.125
                     </button>
-                    <button className="bg-slate-500 odd:bg-slate-600" onClick={handleNumber} value="0.25">
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleNumber}
+                      value="0.25"
+                    >
                       0.25
                     </button>
-                    <button className="bg-slate-500 odd:bg-slate-600" onClick={handleNumber} value="0.5">
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleNumber}
+                      value="0.5"
+                    >
                       0.5
                     </button>
-                    <button className="bg-slate-500 odd:bg-slate-600" onClick={handleNumber} value="1">
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleNumber}
+                      value="1"
+                    >
                       1
                     </button>
-                    <button className="bg-slate-500 odd:bg-slate-600" onClick={handleNumber} value="2">
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleNumber}
+                      value="2"
+                    >
                       2
                     </button>
-                    <button className="bg-slate-500 odd:bg-slate-600" onClick={handleNumber} value="3">
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleNumber}
+                      value="3"
+                    >
                       3
                     </button>
-                    <button className="bg-slate-500 odd:bg-slate-600" onClick={handleNumber} value="3">
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleNumber}
+                      value="3"
+                    >
                       4
+                    </button>
+                  </div>
+                </div>
+              )}
+              <input
+                onSelect={() => {
+                  setNumbersOpen(false);
+                  setIngredientsOpen(false);
+                  setMeasureOpen(!MeasureOpen);
+                }}
+                className="p-1 w-1/2"
+                type="string"
+                onChange={(e) => setIngredientMeasure(e.target.value)}
+                value={ingredientMeasure}
+              />
+              {MeasureOpen && (
+                <div className="absolute top-11 right-0">
+                  <div className="flex flex-col">
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleMeasure}
+                      value="Un"
+                    >
+                      Un
+                    </button>
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleMeasure}
+                      value="ml"
+                    >
+                      ml
+                    </button>
+                    <button
+                      className="bg-slate-500 odd:bg-slate-600"
+                      onClick={handleMeasure}
+                      value="g"
+                    >
+                      g
                     </button>
                   </div>
                 </div>
@@ -195,24 +283,25 @@ export default function AddIngredients(props) {
         )}
       </form>
       <div className="flex justify-center">
-        {createItemButton ?(
-        <button
-        onClick={(e)=>{e.preventDefault();setCreateItemButton(!createItemButton)}}
-          className="bg-green-800 p-3 rounded-xl mt-5 "
-        >
-        Create Next Item
-        </button>
-
-        ):(
-        <button
-          onClick={() => {
-            window.location.reload();
-          }}
-          className="bg-red-800 p-3 rounded-xl mt-5 "
-        >
-          Are You Sure?
-        </button>
-
+        {createItemButton ? (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setCreateItemButton(!createItemButton);
+            }}
+            className="bg-green-800 p-3 rounded-xl mt-5 "
+          >
+            Create Next Item
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              window.location.reload();
+            }}
+            className="bg-red-800 p-3 rounded-xl mt-5 "
+          >
+            Are You Sure?
+          </button>
         )}
       </div>
     </>

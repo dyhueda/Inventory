@@ -32,7 +32,7 @@ export default function ItemList() {
 
   }
   return (
-    <div className=" bg-slate-700 w-screen  px-8 p-4">
+    <div className=" bg-slate-700 w-screen  p-2">
       <div className="relative p-1 ">
         <form className="flex justify-center">
           <input

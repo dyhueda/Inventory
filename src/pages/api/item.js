@@ -16,17 +16,19 @@ if(req.method === 'POST'){
 }
 if (req.method === 'PUT' && req.body.type === 'addIngredient'){
   try{
-    const { name, ingredientId, quantity } = req.body;
+    const { name, ingredientId, quantity , measure} = req.body;
+    console.log(measure)
     await connectMongoDb();
     const item = await Items.findOneAndUpdate(
       { name: name },
       {
         $push: {
-          ingredients: [{ ingredient: ingredientId, quantity: quantity }],
+          ingredients: [{ ingredient: ingredientId, quantity: quantity ,measure : measure}],
         },
       },
       { new: true }
     ).populate('ingredients.ingredient');
+    console.log(item)
     return res.status(201).send({message : "Item updated successfully", item: item}) 
    }catch(error){
     console.error(error)
@@ -47,10 +49,10 @@ if(req.method === 'PUT' && req.body.type === 'updateItem'){
 }
 if(req.method === 'PUT' && req.body.type === 'updateQuantity'){
   try{
-    const { itemId, id , quantity } = req.body;
+    const { itemId, id , quantity, measure } = req.body;
     console.log(id, quantity , itemId);
     await connectMongoDb();
-    const item = await Items.updateOne({'ingredients._id' : id},{$set:{'ingredients.$.quantity' : quantity}})
+    const item = await Items.updateOne({'ingredients._id' : id},{$set:{'ingredients.$.quantity' : quantity,'ingredients.$.measure' : measure }})
     console.log(item)
     return res.status(200).send({message : "Quantity updated successfully"});
   }catch(error){

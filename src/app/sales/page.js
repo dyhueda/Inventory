@@ -1,5 +1,7 @@
 "use client";
+import Loading from "@/components/Loading";
 import BackIcon from "@/components/icons/BackIcon";
+import formatNumber from "@/utils/formatNumber";
 import { useEffect, useState } from "react";
 
 export default function salesPage() {
@@ -11,6 +13,7 @@ export default function salesPage() {
   const [clickedDate, setClickedDate] = useState("");
   const [toggleItems, setToggleItems] = useState(false);
   const [toggleIngredients, setToggleIngredients] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`/api/sale`, {
@@ -21,6 +24,7 @@ export default function salesPage() {
     })
       .then((response) => response.json())
       .then((response) => setAllDates(response.dates))
+      .then(setLoading(false))
       .catch((error) => console.error(error));
 
     fetch("/api/ingredient", {
@@ -82,12 +86,17 @@ export default function salesPage() {
       }
     })
   );
+
   return (
     <>
     <div className="flex flex-col bg-gray-900 text-2xl items-center mb-2">
       <h1 className="p-2">Sales</h1>
     </div>
-      {toggleHidden && (
+      {loading ? (
+        <Loading/>
+      ):(
+
+      toggleHidden && (
         <div>
           <div className="flex flex-row justify-between p-2">
             <div>{clickedDate}</div>
@@ -144,12 +153,16 @@ export default function salesPage() {
                       key={ingredient.id}
                     >
                       <div>{ingredient.name}</div>
-                      <div>{ingredient.quantity}</div>
+                      <div className="flex flex-row">
+                      <div>{formatNumber(ingredient.quantity)}</div>
+                      <div>{ingredient.measure}</div>
+                      </div>
                     </div>
                   )
               )}
           </div>
         </div>
+      )
       )}
       {!toggleHidden && (
         <div className="grid grid-cols-3 gap-1">
